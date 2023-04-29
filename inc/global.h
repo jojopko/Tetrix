@@ -1,3 +1,6 @@
+/* This file is licensed under the GPL 3. 
+ * For details see: www.gnu.org/licenses/gpl-3.0.txt 
+ * Author: Konstantin Serezhkin (t.me/jojopko_bot) */
 #ifndef _GLOBAL_H_
 #define _GLOBAL_H_
 
