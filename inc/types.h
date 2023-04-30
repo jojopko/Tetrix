@@ -13,7 +13,14 @@ struct Cell;
 
 struct GameField;
 
-
+enum BlockColor {
+	BLOCK_NONE,
+	BLOCK_RED,
+	BLOCK_BLUE,
+	BLOCK_GREEN,
+	BLOCK_YELLOW,
+	BLOCK_VIOLET
+};
 
 #endif
 
