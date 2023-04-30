@@ -16,9 +16,18 @@ find_library(CHECK_LIBRARY NAMES check)
 include_directories(${CHECK_INCLUDE_DIRS})
 include_directories(inc/)
 
-set(SOURCES src/main.cpp)
+set(SOURCES src/main.cpp
+			src/gamefield.cpp
+			src/figure.cpp
+			src/draw.cpp
+			src/game.cpp)
 
-set(INCLUDE inc/global.h)
+set(INCLUDE inc/global.h
+			inc/gamefield.h
+			inc/figure.h
+			inc/draw.h
+			inc/types.h
+			inc/game.h)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
