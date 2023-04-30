@@ -6,11 +6,13 @@
 #define _GAMEFIELD_H_
 
 #include <SDL.h>
-#include "figure.h"
+#include "types.h"
+
+#define GAMEFIELD_W 15
+#define GAMEFIELD_H 22
 
 struct Cell {
-	SDL_Color color;
-	SDL_Point position;
+	BlockColor color;
 };
 
 struct GameField {
@@ -20,7 +22,7 @@ struct GameField {
 };
 
 /* Game field initialization */
-GameField * init_gamefield(int w, int h);
+GameField * init_gamefield();
 
 /* Free game field */
 void free_gamefield(GameField * gf);
