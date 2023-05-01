@@ -3,4 +3,33 @@
  * Author: Konstantin Serezhkin (t.me/jojopko_bot) */
 
 #include "game.h"
+#include "gamefield.h"
+#include "draw.h"
+#include "global.h"
+#include <SDL_render.h>
+#include <SDL_timer.h>
+
+GameField * gamefield = nullptr;
+int score = 0;
+
+void init_game() {
+	gamefield = init_gamefield();
+}
+
+void run_game() {
+	_is_running = true;
+	while(_is_running) {
+		SDL_Event e;
+		while (SDL_PollEvent(&e) != 0) {
+			if (e.type == SDL_QUIT) {
+				_is_running = false;
+			}
+		}
+		draw_gamefield(gamefield);
+		SDL_RenderPresent(_renderer);
+		SDL_Delay(16);
+		SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
+		SDL_RenderClear(_renderer);
+	}
+}
 
