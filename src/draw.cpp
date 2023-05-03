@@ -2,14 +2,11 @@
  * For details see: www.gnu.org/licenses/gpl-3.0.txt 
  * Author: Konstantin Serezhkin (t.me/jojopko_bot) */
 
-#include <SDL_rect.h>
-#include <SDL_render.h>
 #include <SDL_ttf.h>
 #include <sys/types.h>
 #include "global.h"
 #include "draw.h"
 #include "types.h"
-
 
 #define BLOCK_SIZE 22
 
@@ -38,6 +35,7 @@ void set_draw_color_block(BlockColor color) {
 
 void draw_gamefield(GameField * gf) {
 	if (gf == nullptr) {
+        printf("Gamefield is 'null'\n");
 		return;
 	}
 	// Fill background
@@ -61,18 +59,14 @@ void draw_gamefield(GameField * gf) {
 	}
 }
 
-SDL_Texture * make_texture_from_text(SDL_Renderer *renderer, char *text, TTF_Font *font, u_char r, u_char g, u_char b) {
-    SDL_Surface * surface;
-	SDL_Texture * texture;
-    SDL_Color textColor = {r, g, b, 0};
-    surface = TTF_RenderText_Solid(font, text, textColor);
-    texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
-	return texture;
-}
-
 void draw_score() {
-	
+	int score = 123571;
+    int max_len = 6;
+    SDL_Texture * a = get_ttf_texture("hello\0");
+    SDL_Rect rect = {0, 0};
+    SDL_QueryTexture(a, NULL, NULL, &rect.w, &rect.w);
+    printf("%d %d\n", rect.w, rect.h);
+    SDL_RenderCopy(_renderer, a, NULL, &rect);
 }
 
 
