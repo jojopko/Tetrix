@@ -5,10 +5,22 @@
 #include <stdio.h>
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include "gamefield.h"
 #include "global.h"
 #include "log4c.h"
 
 // Init game
+GameField * _gamefield = nullptr;
+
+int init_gamefield() {
+    _gamefield = make_gamefield();
+    if (_gamefield == nullptr) {
+        printf("Gamefield initalization failed\n");
+        return 1;
+    }
+    return 0;
+}
+
 int init_game() {
     int err = 0;
     err |= init_sdl();
@@ -18,6 +30,7 @@ int init_game() {
     err |= load_font16();
     err |= load_numbers_font16();
     err |= init_logger();
+    err |= init_gamefield();
     return err;
 }
 
@@ -31,6 +44,8 @@ int init_sdl() {
     return 0;
 }
 
+SDL_Window * _window = nullptr;
+
 int init_window() {
     _window = SDL_CreateWindow("Tetrix\0", 0, 0, WIN_W, WIN_H, SDL_WINDOW_SHOWN);
     if (!_window) {
@@ -39,6 +54,8 @@ int init_window() {
 	}
     return 0;
 }
+
+SDL_Renderer * _renderer = nullptr;
 
 int init_renderer() {
     _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
@@ -63,7 +80,7 @@ TTF_Font * _font16 = nullptr;
 
 int load_font16() {
     _font16 = TTF_OpenFont("/home/jojopko/Desktop/Tetrix/assets/fonts/SpaceMono-Bold.ttf\0", 16);
-    if (_font16 != nullptr) {
+    if (_font16 == nullptr) {
         printf("Load font 16pt -- failed\n");
         return 1;
     }
@@ -88,7 +105,7 @@ int load_numbers_font16() {
     for (int i = 0; i < numbers_size; i++) {
         buffer[0] = numbers_list[i];
         _numbers_f16[i] = get_ttf_texture(buffer);
-        if (_numbers_f16[i]) {
+        if (!_numbers_f16[i]) {
             err = 1;
         }
     }

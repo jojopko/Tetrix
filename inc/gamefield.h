@@ -21,8 +21,8 @@ struct GameField {
 	int h;
 };
 
-/* Game field initialization */
-GameField * init_gamefield();
+/* Game field creation */
+GameField * make_gamefield();
 
 /* Free game field */
 void free_gamefield(GameField * gf);

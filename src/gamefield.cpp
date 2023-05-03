@@ -5,7 +5,7 @@
 #include "gamefield.h"
 #include "types.h"
 
-GameField * init_gamefield() {
+GameField * make_gamefield() {
 	GameField * gf = (GameField *) calloc(1, sizeof(GameField));
 	gf->w = GAMEFIELD_W;
 	gf->h = GAMEFIELD_H;

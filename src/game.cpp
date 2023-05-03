@@ -11,6 +11,10 @@ GameField * gamefield = nullptr;
 int score = 0;
 bool _is_running = false;
 
+int get_score() {
+    return score;
+}
+
 void run_game() {
 	_is_running = true;
 	while(_is_running) {
@@ -20,7 +24,8 @@ void run_game() {
 				_is_running = false;
 			}
 		}
-		draw_gamefield(gamefield);
+		draw_gamefield(_gamefield);
+        //draw_score();
 		SDL_RenderPresent(_renderer);
 		SDL_Delay(16);
 		SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);

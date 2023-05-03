@@ -5,6 +5,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <log4c.h>
+#include "types.h"
 
 #ifndef _GLOBAL_H_
 #define _GLOBAL_H_
@@ -20,6 +21,8 @@ extern SDL_Window * _window;
 extern TTF_Font * _font16;
 extern SDL_Texture ** _numbers_f16;
 extern log4c_category_t * logger;
+extern GameField * _gamefield;
+
 
 int init_sdl();
 int init_game();
