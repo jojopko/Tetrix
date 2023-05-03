@@ -20,7 +20,8 @@ set(SOURCES src/main.cpp
 			src/gamefield.cpp
 			src/figure.cpp
 			src/draw.cpp
-			src/game.cpp)
+			src/game.cpp
+            src/init.cpp)
 
 set(INCLUDE inc/global.h
 			inc/gamefield.h

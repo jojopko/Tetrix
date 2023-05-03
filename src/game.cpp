@@ -6,15 +6,10 @@
 #include "gamefield.h"
 #include "draw.h"
 #include "global.h"
-#include <SDL_render.h>
-#include <SDL_timer.h>
 
 GameField * gamefield = nullptr;
 int score = 0;
-
-void init_game() {
-	gamefield = init_gamefield();
-}
+bool _is_running = false;
 
 void run_game() {
 	_is_running = true;
