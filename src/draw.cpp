@@ -3,7 +3,9 @@
  * Author: Konstantin Serezhkin (t.me/jojopko_bot) */
 
 #include <SDL_ttf.h>
+#include <stdio.h>
 #include <sys/types.h>
+#include "game.h"
 #include "global.h"
 #include "draw.h"
 #include "types.h"
@@ -60,13 +62,25 @@ void draw_gamefield(GameField * gf) {
 }
 
 void draw_score() {
-	int score = 123571;
+	int score = get_score();
     int max_len = 6;
-    SDL_Texture * a = get_ttf_texture("hello\0");
+    int width_num, height_num;
+    SDL_Texture * score_title = get_ttf_texture("hello\0"); // TODO: one time initialization
     SDL_Rect rect = {0, 0};
-    SDL_QueryTexture(a, NULL, NULL, &rect.w, &rect.w);
-    printf("%d %d\n", rect.w, rect.h);
-    SDL_RenderCopy(_renderer, a, NULL, &rect);
+    SDL_QueryTexture(score_title, NULL, NULL, &rect.w, &rect.h);
+    SDL_RenderCopy(_renderer, score_title, NULL, &rect); // Print score lable
+    rect.x = rect.w + 5;
+    SDL_QueryTexture(_numbers_f16[0], NULL, NULL, &width_num, &height_num);
+    rect.w = width_num;
+    rect.h = height_num;
+    rect.x += rect.w * max_len;
+    for (int i = 0; i < max_len; i++) {
+        SDL_Texture * num_texture = _numbers_f16[score%10];
+        rect.x -= width_num;
+        SDL_RenderCopy(_renderer, num_texture, NULL, &rect);
+        score /= 10;
+    }
+    SDL_DestroyTexture(score_title);
 }
 
 

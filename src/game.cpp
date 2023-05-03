@@ -6,6 +6,7 @@
 #include "gamefield.h"
 #include "draw.h"
 #include "global.h"
+#include <SDL_events.h>
 
 GameField * gamefield = nullptr;
 int score = 0;
@@ -13,6 +14,10 @@ bool _is_running = false;
 
 int get_score() {
     return score;
+}
+
+void add_score(int n) {
+    score += n;
 }
 
 void run_game() {
@@ -23,9 +28,12 @@ void run_game() {
 			if (e.type == SDL_QUIT) {
 				_is_running = false;
 			}
+            if (e.type == SDL_MOUSEBUTTONDOWN) {
+                add_score(10);
+            }
 		}
 		draw_gamefield(_gamefield);
-        //draw_score();
+        draw_score();
 		SDL_RenderPresent(_renderer);
 		SDL_Delay(16);
 		SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
