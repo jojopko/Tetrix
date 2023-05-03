@@ -65,16 +65,16 @@ void draw_score() {
 	int score = get_score();
     int max_len = 6;
     int width_num, height_num;
-    SDL_Texture * score_title = get_ttf_texture("hello\0"); // TODO: one time initialization
-    SDL_Rect rect = {0, 0};
+    SDL_Texture * score_title = get_ttf_texture("Score:\0"); // TODO: one time initialization
+    SDL_Rect rect = {63, 10};
     SDL_QueryTexture(score_title, NULL, NULL, &rect.w, &rect.h);
     SDL_RenderCopy(_renderer, score_title, NULL, &rect); // Print score lable
-    rect.x = rect.w + 5;
+    rect.x = rect.x + rect.w + 5;
     SDL_QueryTexture(_numbers_f16[0], NULL, NULL, &width_num, &height_num);
     rect.w = width_num;
     rect.h = height_num;
     rect.x += rect.w * max_len;
-    for (int i = 0; i < max_len; i++) {
+    for (int i = 0; i < max_len; i++) { // Print numbers
         SDL_Texture * num_texture = _numbers_f16[score%10];
         rect.x -= width_num;
         SDL_RenderCopy(_renderer, num_texture, NULL, &rect);
@@ -82,6 +82,4 @@ void draw_score() {
     }
     SDL_DestroyTexture(score_title);
 }
-
-
 
