@@ -93,7 +93,9 @@ void draw_brush() {
 	SDL_Rect draw_block = {start_pos.x, start_pos.y, BLOCK_SIZE, BLOCK_SIZE};
 	for (int i = 0; i < MASK_SIZE; i++) {
 		set_draw_color_block(_brush->mask[i]);
-		SDL_RenderFillRect(_renderer, &draw_block);
+        if (_brush->mask[i] != BLOCK_NONE) {
+		    SDL_RenderFillRect(_renderer, &draw_block);
+        }
 		if ((i+1) % (BLOCK_SIZE / 4 - 1)) {
 			draw_block.x += draw_block.w + margin;
 		}
