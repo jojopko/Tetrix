@@ -22,7 +22,7 @@ extern TTF_Font * _font16;
 extern SDL_Texture ** _numbers_f16;
 extern log4c_category_t * logger;
 extern GameField * _gamefield;
-
+extern Brush * _brush; 
 
 int init_sdl();
 int init_game();

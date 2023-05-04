@@ -5,12 +5,24 @@
 #include <stdio.h>
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include "figure.h"
 #include "gamefield.h"
 #include "global.h"
 #include "log4c.h"
 
 // Init game
 GameField * _gamefield = nullptr;
+Brush * _brush = nullptr;
+
+int init_brush() {
+    _brush = create_brush();
+    if (_brush == nullptr) {
+        printf("brush initialization failed\n");
+        return 1;
+    }
+    set_figure(_brush, FIGURE_I);
+    return 0;
+}
 
 int init_gamefield() {
     _gamefield = make_gamefield();
@@ -31,6 +43,7 @@ int init_game() {
     err |= load_numbers_font16();
     err |= init_logger();
     err |= init_gamefield();
+    err |= init_brush();
     return err;
 }
 

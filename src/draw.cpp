@@ -9,6 +9,7 @@
 #include "global.h"
 #include "draw.h"
 #include "types.h"
+#include "figure.h"
 
 #define BLOCK_SIZE 22
 
@@ -66,7 +67,7 @@ void draw_score() {
     int max_len = 6;
     int width_num, height_num;
     SDL_Texture * score_title = get_ttf_texture("Score:\0"); // TODO: one time initialization
-    SDL_Rect rect = {63, 10};
+    SDL_Rect rect = {63, 3};
     SDL_QueryTexture(score_title, NULL, NULL, &rect.w, &rect.h);
     SDL_RenderCopy(_renderer, score_title, NULL, &rect); // Print score lable
     rect.x = rect.x + rect.w + 5;
@@ -81,5 +82,25 @@ void draw_score() {
         score /= 10;
     }
     SDL_DestroyTexture(score_title);
+}
+
+void draw_brush() {
+	int margin = 2;
+	SDL_Point start_pos = {
+        16 + _brush->x * (BLOCK_SIZE + margin),
+        64 + _brush->y * (BLOCK_SIZE + margin)
+    };
+	SDL_Rect draw_block = {start_pos.x, start_pos.y, BLOCK_SIZE, BLOCK_SIZE};
+	for (int i = 0; i < MASK_SIZE; i++) {
+		set_draw_color_block(_brush->mask[i]);
+		SDL_RenderFillRect(_renderer, &draw_block);
+		if ((i+1) % (BLOCK_SIZE / 4 - 1)) {
+			draw_block.x += draw_block.w + margin;
+		}
+		else {
+			draw_block.x = start_pos.x;
+			draw_block.y += draw_block.h + margin;
+		}
+	}
 }
 

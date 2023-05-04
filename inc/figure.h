@@ -38,9 +38,14 @@ enum FigureType {
 	FIGURE_Z
 };
 
+#define MASK_SIZE 16
+
 struct Brush {
-	SDL_Color * mask;
-	SDL_Point position;
+	BlockColor * mask; // 4x4
+    int rotate;
+    int type;
+    int x;
+    int y;
 };
 
 Brush * create_brush();
