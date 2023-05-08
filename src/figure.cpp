@@ -3,6 +3,7 @@
  * Author: Konstantin Serezhkin (t.me/jojopko_bot) */
 
 #include "figure.h"
+#include "gamefield.h"
 #include "types.h"
 #include "global.h"
 #include <malloc.h>
@@ -23,17 +24,15 @@ void free_brush(Brush * br) {
 
 void set_figure(Brush * br, FigureType type) {
     if (type == FIGURE_I) {
-        for(int i = 0; i < MASK_SIZE; i++) {
+        for(int i = 4; i < 8; i++) {
             br->mask[i] = BLOCK_BLUE;
         }
-        br->mask[MASK_SIZE-1] = BLOCK_NONE;
+        /* br->mask[MASK_SIZE-1] = BLOCK_NONE; */
     }
 }
 
 void rotate_figure(Brush * br) {
     BlockColor temp;
-
-    // Транспонирование матрицы
     for (int i = 0; i < 4; i++) {
         for (int j = i; j < 4; j++) {
             temp = _brush->mask[i*4 + j];
@@ -41,8 +40,6 @@ void rotate_figure(Brush * br) {
             _brush->mask[j*4 + i] = temp;
         }
     }
-
-    // Переворот матрицы на 90 градусов
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 2; j++) {
             temp = _brush->mask[i*4 + j];
@@ -50,5 +47,9 @@ void rotate_figure(Brush * br) {
             _brush->mask[i*4 + (3-j)] = temp;
         }
     }
+}
+
+void do_freeze_brush(Brush * br, GameField * gf) {
+    for (int i = 0) {}
 }
 
