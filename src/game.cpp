@@ -26,32 +26,35 @@ void add_score(int n) {
 void run_game() {
 	_is_running = true;
 	while(_is_running) {
+        int dx = 0, dy = 0;
 		SDL_Event e;
 		while (SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT) {
 				_is_running = false;
 			}
             if (e.type == SDL_MOUSEBUTTONDOWN) {
+                random_figure(_brush);
                 add_score(10);
             }
             if (e.type == SDL_KEYDOWN) {
                 if (e.key.keysym.scancode == SDL_SCANCODE_A) {
-                    _brush->x -= 1;
+                    dx = -1;
                 }
                 if (e.key.keysym.scancode == SDL_SCANCODE_D) {
-                    _brush->x += 1;
+                    dx = 1;
                 }
                 if (e.key.keysym.scancode == SDL_SCANCODE_W) {
-                    _brush->y -= 1;
+                    dy = -1;
                 }
                 if (e.key.keysym.scancode == SDL_SCANCODE_S) {
-                    _brush->y += 1;
+                    dy = 1;
                 }
                 if (e.key.keysym.scancode == SDL_SCANCODE_R) {
                     rotate_figure(_brush);
                 }
             }
 		}
+        move(_gamefield, _brush, dx, dy);
 		draw_gamefield(_gamefield);
         draw_score();
         draw_brush();

@@ -13,6 +13,7 @@ struct Cell;
 
 struct GameField;
 
+#define BLOCK_COLORS_COUNT 5
 enum BlockColor {
 	BLOCK_NONE,
 	BLOCK_RED,

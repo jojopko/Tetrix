@@ -6,6 +6,7 @@
 #include "gamefield.h"
 #include "types.h"
 #include "global.h"
+#include <cstdlib>
 #include <malloc.h>
 
 Brush * create_brush() {
@@ -22,12 +23,39 @@ void free_brush(Brush * br) {
     free(br);
 } 
 
-void set_figure(Brush * br, FigureType type) {
-    if (type == FIGURE_I) {
-        for(int i = 4; i < 8; i++) {
-            br->mask[i] = BLOCK_BLUE;
+void parse_figure_pattern(const char * pattern, BlockColor color, Brush * br) {
+    for (int i = 0; i < 16; i++) {
+        if (pattern[i] == '1') {
+            br->mask[i] = color;
         }
-        /* br->mask[MASK_SIZE-1] = BLOCK_NONE; */
+        else {
+            br->mask[i] = BLOCK_NONE;
+        }
+    }
+}
+
+// FIXME: redesign brush for normar rotate (4x2)
+void set_figure(Brush * br, FigureType type, BlockColor color) {
+    if (type == FIGURE_I) {
+        parse_figure_pattern("0000" "1111" "0000" "0000", color, br);
+    }
+    if (type == FIGURE_T) {
+        parse_figure_pattern("0010" "0111" "0000" "0000", color, br);
+    }
+    if (type == FIGURE_J) {
+        parse_figure_pattern("0001" "1111" "0000" "0000", color, br);
+    }
+    if (type == FIGURE_S) {
+        parse_figure_pattern("0110" "1100" "0000" "0000", color, br);
+    }
+    if (type == FIGURE_O) {
+        parse_figure_pattern("0000" "0110" "0110" "0000", color, br);
+    }
+    if (type == FIGURE_L) {
+        parse_figure_pattern("0000" "1000" "1111" "0000", color, br);
+    }
+    if (type == FIGURE_Z) {
+        parse_figure_pattern("0000" "1100" "0110" "0000", color, br);
     }
 }
 
@@ -50,6 +78,43 @@ void rotate_figure(Brush * br) {
 }
 
 void do_freeze_brush(Brush * br, GameField * gf) {
-    for (int i = 0) {}
+    //for (int i = 0) {}
+}
+
+void try_move(GameField * gf, Brush * br, int dx, int dy) {
+    gf = _gamefield;
+    br = _brush;
+    for (int y = 0; y < 4; y++) {
+        for (int x = 0; x < 4; x++) {
+            int real_y = (br->y + y);
+            int real_x = (br->x + x);
+            if (br->mask[y*4 + x] != BLOCK_NONE) {
+                if (real_x + dx < 0) {
+                    dx = 0;
+                }
+                if (real_x + dx >= gf->w) {
+                    dx = 0;
+                }
+                if (real_y + dy < 0) {
+                    dy = 0;
+                }
+                if (real_y + dy >= gf->h) {
+                    dy = 0;
+                }
+            }
+        }
+    }
+    br->x += dx;
+    br->y += dy;
+}
+
+void move(GameField * gf, Brush * br, int dx, int dy) {
+    try_move(gf, br, dx, dy);
+}
+
+void random_figure(Brush * br) {
+    FigureType r_figure = (FigureType) (rand() % FIGURES_COUNT);
+    BlockColor r_color = (BlockColor) (rand() % BLOCK_COLORS_COUNT + 1);
+    set_figure(br, r_figure, r_color);
 }
 

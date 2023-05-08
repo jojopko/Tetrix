@@ -9,6 +9,7 @@
 #include "gamefield.h"
 #include "global.h"
 #include "log4c.h"
+#include "types.h"
 
 // Init game
 GameField * _gamefield = nullptr;
@@ -20,7 +21,7 @@ int init_brush() {
         printf("brush initialization failed\n");
         return 1;
     }
-    set_figure(_brush, FIGURE_I);
+    set_figure(_brush, FIGURE_I, BLOCK_BLUE);
     return 0;
 }
 
