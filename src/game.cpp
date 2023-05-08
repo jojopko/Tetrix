@@ -7,6 +7,7 @@
 #include "draw.h"
 #include "global.h"
 #include "types.h"
+#include <SDL_timer.h>
 #include <figure.h>
 #include <SDL_events.h>
 #include <SDL_scancode.h>
@@ -54,6 +55,13 @@ void run_game() {
                 }
             }
 		}
+        static int ticks_start = SDL_GetTicks();
+        int curr_ticks = SDL_GetTicks();
+        if (dy) ticks_start = curr_ticks;
+        if (curr_ticks - ticks_start >= 1000) {
+            dy = 1;
+            ticks_start = curr_ticks;
+        }
         move(_gamefield, _brush, dx, dy);
 		draw_gamefield(_gamefield);
         draw_score();
