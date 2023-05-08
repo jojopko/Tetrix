@@ -78,7 +78,19 @@ void rotate_figure(Brush * br) {
 }
 
 void do_freeze_brush(Brush * br, GameField * gf) {
-    //for (int i = 0) {}
+    gf = _gamefield;
+    br = _brush;
+    for (int y = 0; y < 4; y++) {
+        for (int x = 0; x < 4; x++) {
+            int real_y = (br->y + y);
+            int real_x = (br->x + x);
+            BlockColor c = br->mask[y*4 + x];
+            if (c != BLOCK_NONE) {
+                gf->field[real_y * gf->w + real_x].color = c;
+            }
+        }
+    }
+    br->y = 0;
 }
 
 void try_move(GameField * gf, Brush * br, int dx, int dy) {
@@ -89,16 +101,26 @@ void try_move(GameField * gf, Brush * br, int dx, int dy) {
             int real_y = (br->y + y);
             int real_x = (br->x + x);
             if (br->mask[y*4 + x] != BLOCK_NONE) {
+                BlockColor bottom = gf->field[(real_y+1) * gf->w + real_x].color;
+                BlockColor side = gf->field[(real_y) * gf->w + real_x + dx].color;
                 if (real_x + dx < 0) {
                     dx = 0;
                 }
                 if (real_x + dx >= gf->w) {
                     dx = 0;
                 }
+                if (side != BLOCK_NONE) {
+                    dx = 0;
+                }
                 if (real_y + dy < 0) {
                     dy = 0;
                 }
                 if (real_y + dy >= gf->h) {
+                    do_freeze_brush(br, gf);
+                    dy = 0;
+                }
+                if (dy > 0 && bottom != BLOCK_NONE) {
+                    do_freeze_brush(br, gf);
                     dy = 0;
                 }
             }
