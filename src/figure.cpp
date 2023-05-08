@@ -91,6 +91,8 @@ void do_freeze_brush(Brush * br, GameField * gf) {
         }
     }
     br->y = 0;
+    random_figure(br);
+    do_delete_row(gf);
 }
 
 void try_move(GameField * gf, Brush * br, int dx, int dy) {

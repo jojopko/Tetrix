@@ -27,14 +27,7 @@ GameField * make_gamefield();
 /* Free game field */
 void free_gamefield(GameField * gf);
 
-/* Checks if there is a complete row (in classic mode).
- * Checks if there is a row of 4 of the same color.*/
-int delete_row(GameField * gf);
-
-/* Checks if there is a column of 4 of the same color (not for classic) */
-int delete_col(GameField * gf);
-
-int paste_figure(GameField * gf, Brush * br);
+void do_delete_row(GameField * gf);
 
 #endif
 
