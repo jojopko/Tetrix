@@ -1,6 +1,7 @@
 # Tetrix
-Tetris-like game on SDL2. License GPL v3.
+Tetris-like game on SDL2. License GPL v3. 
 
+sample text
 
 ## Dependencies
 - [SDL >= 2.26.4](https://github.com/libsdl-org/SDL)
