@@ -77,6 +77,49 @@ void rotate_figure(Brush * br) {
     }
 }
 
+void try_rotate(Brush * br, GameField * gf) {
+    bool is_collide = false;
+    rotate_figure(br);
+    for (int y = 0; y < 4; y++) {
+        for (int x = 0; x < 4; x++) {
+            int real_y = (br->y + y);
+            int real_x = (br->x + x);
+            BlockColor c = br->mask[y*4 + x];
+            BlockColor on_gf = gf->field[real_y * gf->w + real_x].color;
+            if (c != BLOCK_NONE) {
+                if (real_x < 0) {
+                    is_collide = true;
+                }
+                if (real_x >= gf->w) {
+                    is_collide = true;
+                }
+                if (real_y < 0) {
+                    is_collide = true;
+                }
+                if (on_gf != BLOCK_NONE) {
+                    is_collide = true;
+                }
+            }
+            if (is_collide) {
+                rotate_figure(br);
+                rotate_figure(br);
+                rotate_figure(br);
+                return;
+            }
+        }
+    }
+}
+
+void return_brush(Brush * br, GameField * gf) {
+    br->y = 0;
+    if (br->x < 0) {
+        br->x -= br->x;
+    }
+    if (br->x + 4 >= gf->w) {
+        br->x += gf->w - (br->x + 4);
+    }
+}
+
 void do_freeze_brush(Brush * br, GameField * gf) {
     gf = _gamefield;
     br = _brush;
@@ -90,9 +133,9 @@ void do_freeze_brush(Brush * br, GameField * gf) {
             }
         }
     }
-    br->y = 0;
     copy_brush_mask(_next_block->mask, br->mask);
     random_figure(_next_block);
+    return_brush(br, gf);
     do_delete_row(gf);
 }
 

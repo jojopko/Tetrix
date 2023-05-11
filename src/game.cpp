@@ -51,7 +51,8 @@ void run_game() {
                     dy = 1;
                 }
                 if (e.key.keysym.scancode == SDL_SCANCODE_R) {
-                    rotate_figure(_brush);
+                    /* rotate_figure(_brush); */
+                    try_rotate(_brush, _gamefield);
                 }
             }
 		}

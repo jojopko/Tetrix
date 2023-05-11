@@ -56,13 +56,13 @@ void free_brush(Brush * br);
 
 void set_figure(Brush * br, FigureType type, BlockColor color);
 
+void try_rotate(Brush * br, GameField * gf);
+
 void rotate_figure(Brush * br);
 
 void move(GameField * gf, Brush * br, int dx, int dy);
 
 bool can_rotate(GameField * gf, Brush * br);
-
-void return_brush_to_start(Brush * br);
 
 void random_figure(Brush * br);
 
