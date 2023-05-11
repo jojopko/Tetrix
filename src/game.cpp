@@ -65,7 +65,8 @@ void run_game() {
         move(_gamefield, _brush, dx, dy);
 		draw_gamefield(_gamefield);
         draw_score();
-        draw_brush();
+        draw_brush(_brush);
+        draw_brush(_next_block);
 		SDL_RenderPresent(_renderer);
 		SDL_Delay(16);
 		SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);

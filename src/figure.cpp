@@ -6,7 +6,7 @@
 #include "gamefield.h"
 #include "types.h"
 #include "global.h"
-#include <cstdlib>
+#include <stdlib.h>
 #include <malloc.h>
 
 Brush * create_brush() {
@@ -91,7 +91,8 @@ void do_freeze_brush(Brush * br, GameField * gf) {
         }
     }
     br->y = 0;
-    random_figure(br);
+    copy_brush_mask(_next_block->mask, br->mask);
+    random_figure(_next_block);
     do_delete_row(gf);
 }
 
@@ -140,5 +141,11 @@ void random_figure(Brush * br) {
     FigureType r_figure = (FigureType) (rand() % FIGURES_COUNT);
     BlockColor r_color = (BlockColor) (rand() % BLOCK_COLORS_COUNT + 1);
     set_figure(br, r_figure, r_color);
+}
+
+void copy_brush_mask(BlockColor * source, BlockColor * dest) {
+    for (int i = 0; i < MASK_SIZE; i++) {
+        dest[i] = source[i];
+    }
 }
 

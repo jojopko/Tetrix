@@ -11,7 +11,7 @@ void draw_score();
 
 void draw_gamefield(GameField * gf);
 
-void draw_brush(); 
+void draw_brush(Brush * br);
 
 #endif
 

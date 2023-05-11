@@ -84,16 +84,16 @@ void draw_score() {
     SDL_DestroyTexture(score_title);
 }
 
-void draw_brush() {
+void draw_brush(Brush * br) {
 	int margin = 2;
 	SDL_Point start_pos = {
-        16 + _brush->x * (BLOCK_SIZE + margin),
-        64 + _brush->y * (BLOCK_SIZE + margin)
+        16 + br->x * (BLOCK_SIZE + margin),
+        64 + br->y * (BLOCK_SIZE + margin)
     };
 	SDL_Rect draw_block = {start_pos.x, start_pos.y, BLOCK_SIZE, BLOCK_SIZE};
 	for (int i = 0; i < MASK_SIZE; i++) {
-		set_draw_color_block(_brush->mask[i]);
-        if (_brush->mask[i] != BLOCK_NONE) {
+		set_draw_color_block(br->mask[i]);
+        if (br->mask[i] != BLOCK_NONE) {
 		    SDL_RenderFillRect(_renderer, &draw_block);
         }
 		if ((i+1) % (BLOCK_SIZE / 4 - 1)) {

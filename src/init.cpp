@@ -2,6 +2,7 @@
  * For details see: www.gnu.org/licenses/gpl-3.0.txt 
  * Author: Konstantin Serezhkin (t.me/jojopko_bot) */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -14,14 +15,18 @@
 // Init game
 GameField * _gamefield = nullptr;
 Brush * _brush = nullptr;
+Brush * _next_block = nullptr;
 
 int init_brush() {
     _brush = create_brush();
-    if (_brush == nullptr) {
+    _next_block = create_brush();
+    if (_brush == nullptr || _next_block == nullptr) {
         printf("brush initialization failed\n");
         return 1;
     }
-    set_figure(_brush, FIGURE_I, BLOCK_BLUE);
+    random_figure(_brush);
+    _next_block->x = 10;
+    random_figure(_next_block);
     return 0;
 }
 

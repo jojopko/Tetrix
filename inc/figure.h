@@ -66,5 +66,7 @@ void return_brush_to_start(Brush * br);
 
 void random_figure(Brush * br);
 
+void copy_brush_mask(BlockColor * source, BlockColor * dest);
+
 #endif
 

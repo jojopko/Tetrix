@@ -23,6 +23,7 @@ extern SDL_Texture ** _numbers_f16;
 extern log4c_category_t * logger;
 extern GameField * _gamefield;
 extern Brush * _brush; 
+extern Brush * _next_block;
 
 int init_sdl();
 int init_game();
@@ -33,7 +34,6 @@ int init_logger();
 int load_font16();
 int load_numbers_font16();
 SDL_Texture * get_ttf_texture(char * text);
-
 
 #endif
 
