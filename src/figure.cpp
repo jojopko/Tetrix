@@ -1,0 +1,256 @@
+#include "figure.h"
+#include "gamefield.h"
+#include "types.h"
+#include "global.h"
+#include <stdlib.h>
+#include <malloc.h>
+
+Brush * create_brush() {
+    Brush * brush = (Brush *) calloc(1, sizeof(Brush));
+    brush->rotate = 0;
+    brush->x = 0;
+    brush->y = 0;
+    brush->mask = (BlockColor *) calloc(MASK_SIZE, sizeof(BlockColor));
+    return brush;
+}
+
+void free_brush(Brush * br) {
+    free(br->mask);
+    free(br);
+} 
+
+void parse_figure_pattern(const char * pattern, BlockColor color, Brush * br) {
+    for (int i = 0; i < 16; i++) {
+        if (pattern[i] == '1') {
+            if (color == BLOCK_NONE) {
+                br->mask[i] = (BlockColor) (rand() % BLOCK_COLORS_COUNT + 1);
+            }
+            else {
+                br->mask[i] = color;
+            }
+        }
+        else {
+            br->mask[i] = BLOCK_NONE;
+        }
+    }
+}
+
+// FIXME: redesign brush for normar rotate (4x2)
+void set_figure(Brush * br, FigureType type, BlockColor color) {
+    if (type == FIGURE_I) {
+        parse_figure_pattern("0000" "1111" "0000" "0000", color, br);
+    }
+    if (type == FIGURE_T) {
+        parse_figure_pattern("0010" "0111" "0000" "0000", color, br);
+    }
+    if (type == FIGURE_J) {
+        parse_figure_pattern("0001" "1111" "0000" "0000", color, br);
+    }
+    if (type == FIGURE_S) {
+        parse_figure_pattern("0110" "1100" "0000" "0000", color, br);
+    }
+    if (type == FIGURE_O) {
+        parse_figure_pattern("0000" "0110" "0110" "0000", color, br);
+    }
+    if (type == FIGURE_L) {
+        parse_figure_pattern("0000" "1000" "1111" "0000", color, br);
+    }
+    if (type == FIGURE_Z) {
+        parse_figure_pattern("0000" "1100" "0110" "0000", color, br);
+    }
+}
+
+void rotate_figure(Brush * br) {
+    BlockColor temp;
+    for (int i = 0; i < 4; i++) {
+        for (int j = i; j < 4; j++) {
+            temp = br->mask[i*4 + j];
+            br->mask[i*4 + j] = br->mask[j*4 + i];
+            br->mask[j*4 + i] = temp;
+        }
+    }
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 2; j++) {
+            temp = _gamestats->current_brush->mask[i*4 + j];
+            _gamestats->current_brush->mask[i*4 + j] = _gamestats->current_brush->mask[i*4 + (3-j)];
+            _gamestats->current_brush->mask[i*4 + (3-j)] = temp;
+        }
+    }
+}
+
+void try_rotate(Brush * br, GameField * gf) {
+    bool is_collide = false;
+    rotate_figure(br);
+    for (int y = 0; y < 4; y++) {
+        for (int x = 0; x < 4; x++) {
+            int real_y = (br->y + y);
+            int real_x = (br->x + x);
+            BlockColor c = br->mask[y*4 + x];
+            BlockColor on_gf = gf->field[real_y * gf->w + real_x].color;
+            if (c != BLOCK_NONE) {
+                if (real_x < 0) {
+                    is_collide = true;
+                }
+                if (real_x >= gf->w) {
+                    is_collide = true;
+                }
+                if (real_y < 0) {
+                    is_collide = true;
+                }
+                if (on_gf != BLOCK_NONE) {
+                    is_collide = true;
+                }
+            }
+            if (is_collide) {
+                rotate_figure(br);
+                rotate_figure(br);
+                rotate_figure(br);
+                return;
+            }
+        }
+    }
+}
+
+void return_brush(Brush * br, GameField * gf) {
+    br->y = 0;
+    if (br->x < 0) {
+        br->x -= br->x;
+    }
+    if (br->x + 4 >= gf->w) {
+        br->x += gf->w - (br->x + 4);
+    }
+}
+
+void do_freeze_brush(Brush * br, GameField * gf) {
+    for (int y = 0; y < 4; y++) {
+        for (int x = 0; x < 4; x++) {
+            int real_y = (br->y + y);
+            int real_x = (br->x + x);
+            BlockColor c = br->mask[y*4 + x];
+            if (c != BLOCK_NONE) {
+                gf->field[real_y * gf->w + real_x].color = c;
+            }
+        }
+    }
+    copy_brush_mask(_gamestats->next_brush->mask, br->mask);
+    random_figure(_gamestats->next_brush);
+    return_brush(br, gf);
+    do_delete_row(gf);
+}
+
+void try_move(GameField * gf, Brush * br, int dx, int dy) {
+    for (int y = 0; y < 4; y++) {
+        for (int x = 0; x < 4; x++) {
+            int real_y = (br->y + y);
+            int real_x = (br->x + x);
+            if (br->mask[y*4 + x] != BLOCK_NONE) {
+                BlockColor bottom = gf->field[(real_y+1) * gf->w + real_x].color;
+                BlockColor side = gf->field[(real_y) * gf->w + real_x + dx].color;
+                if (real_x + dx < 0) {
+                    dx = 0;
+                }
+                if (real_x + dx >= gf->w) {
+                    dx = 0;
+                }
+                if (side != BLOCK_NONE) {
+                    dx = 0;
+                }
+                if (real_y + dy < 0) {
+                    dy = 0;
+                }
+                if (real_y + dy >= gf->h) {
+                    do_freeze_brush(br, gf);
+                    dy = 0;
+                }
+                if (dy > 0 && bottom != BLOCK_NONE) {
+                    do_freeze_brush(br, gf);
+                    dy = 0;
+                }
+            }
+        }
+    }
+    br->x += dx;
+    br->y += dy;
+}
+
+void move(GameField * gf, Brush * br, int dx, int dy) {
+    try_move(gf, br, dx, dy);
+    append_current_state();
+}
+
+void do_freeze_brush2(Brush * br, GameField * gf) {
+    for (int y = 0; y < 4; y++) {
+        for (int x = 0; x < 4; x++) {
+            int real_y = (br->y + y);
+            int real_x = (br->x + x);
+            BlockColor c = br->mask[y*4 + x];
+            if (c != BLOCK_NONE) {
+                gf->field[real_y * gf->w + real_x].color = c;
+            }
+        }
+    }
+    copy_brush_mask(_gamestats->next_brush->mask, br->mask);
+    random_figure(_gamestats->next_brush);
+    return_brush(br, gf);
+    fall_blocks_gm2(_gamestats->gamefield);
+}
+
+void try_move2(GameField * gf, Brush * br, int dx, int dy) {
+    for (int y = 0; y < 4; y++) {
+        for (int x = 0; x < 4; x++) {
+            int real_y = (br->y + y);
+            int real_x = (br->x + x);
+            if (br->mask[y*4 + x] != BLOCK_NONE) {
+                BlockColor bottom = gf->field[(real_y+1) * gf->w + real_x].color;
+                BlockColor side = gf->field[(real_y) * gf->w + real_x + dx].color;
+                if (real_x + dx < 0) {
+                    dx = 0;
+                }
+                if (real_x + dx >= gf->w) {
+                    dx = 0;
+                }
+                if (side != BLOCK_NONE) {
+                    dx = 0;
+                }
+                if (real_y + dy < 0) {
+                    dy = 0;
+                }
+                if (real_y + dy >= gf->h) {
+                    do_freeze_brush2(br, gf);
+                    dy = 0;
+                }
+                if (dy > 0 && bottom != BLOCK_NONE) {
+                    do_freeze_brush2(br, gf);
+                    dy = 0;
+                }
+            }
+        }
+    }
+    br->x += dx;
+    br->y += dy;
+}
+
+void move2(GameField * gf, Brush * br, int dx, int dy) {
+    try_move2(gf, br, dx, dy);
+}
+
+void random_figure(Brush * br) {
+    br->rotate = rand() % 3;
+    FigureType r_figure = (FigureType) (rand() % FIGURES_COUNT);
+    BlockColor r_color = (BlockColor) (rand() % BLOCK_COLORS_COUNT + 1);
+    if (_gamestats->current_scene == Scene_Gamemode2) {
+        set_figure(br, r_figure, BLOCK_NONE);
+    }
+    else {
+        set_figure(br, r_figure, r_color);
+    }
+}
+
+void copy_brush_mask(BlockColor * source, BlockColor * dest) {
+    for (int i = 0; i < MASK_SIZE; i++) {
+        dest[i] = source[i];
+    }
+    for (; _gamestats->next_brush->rotate > 0; _gamestats->next_brush->rotate--) 
+        rotate_figure(_gamestats->current_brush);
+}
+
